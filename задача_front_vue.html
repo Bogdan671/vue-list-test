@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+
+    <div id="app">
+
+        <select id="country" @change="changeCountryID">
+            <option v-for="country in countries"
+            :key="country.value" :value="country.value">
+                {{country.title}}
+            </option>
+        </select>
+
+        <select id="region" @change="changeRegionID"
+        ref="regionList">
+            <option v-for="region in currentRegions"
+            :key="region.regionId" :value="region.regionId">
+                {{ region.title }}
+            </option>
+        </select>
+
+        <select id="city">
+            <option v-for="city in currentCities"
+            :key="city.regionId" :value="city.regionId">
+                {{ city.title }}
+            </option>
+        </select>
+    </div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+
+    const { createApp } = Vue
+
+    let regions = [
+        {
+            'title'  : 'Московская обл.',
+            'countryId': 1,
+            'regionId': 1,
+        },
+        {
+            'title'  : 'Краснодарский край.',
+            'countryId': 1,
+            'regionId': 2,
+        },
+
+        {
+            'title'  : 'Западный Мидленд',
+            'countryId': 2,
+            'regionId': 3,
+        },
+        {
+            'title'  : 'Восточный Мидленд',
+            'countryId': 2,
+            'regionId': 4,
+        },
+
+        {
+            'title'  : 'Айдахо',
+            'countryId': 3,
+            'regionId': 5,
+        },
+        {
+            'title'  : 'Алабама',
+            'countryId': 3,
+            'regionId': 6,
+        },
+    ];
+
+    let cities = [
+        {
+            'title'  : 'Видное',
+            'regionId': 1
+        },
+        {
+            'title'  : 'Краснодар',
+            'regionId': 2
+        },
+
+        {
+            'title'  : 'Бирмингем',
+            'regionId': 3
+        },
+        {
+            'title'  : 'Ноттингем',
+            'regionId': 4
+        },
+
+        {
+            'title'  : 'Айдахо-Фолс',
+            'regionId':5
+        },
+        {
+            'title'  : 'Монтгомери',
+            'regionId': 6
+        },
+    ];
+
+    createApp({
+        data() {
+          return {
+            countries: [
+                { value: 0, title: 'Все страны' },
+                { value: 1, title: 'Россия' },
+                { value: 2, title: 'Англия' },
+                { value: 3, title: 'Америка' },
+            ],
+            countryID: 0,
+            regionID: 0
+          }
+        },
+        computed: {
+            currentRegions() {
+                if (this.countryID == 0) {
+                    return [
+                        { title: 'Не выбрано', value: '0' }
+                    ]
+                } else {
+                    return regions.filter(region => region.countryId == this.countryID);
+                }
+            },
+            currentCities() {
+                if (this.regionID == 0) {
+                    return [
+                        { title: 'Не выбрано', value: '0' }
+                    ]
+                } else {
+                    return cities.filter(city => city.regionId == this.regionID);
+                }
+            }
+        },
+        methods: {
+            changeCountryID(e) {
+                if (e.target.value == 0) {
+                    this.countryID = 0;
+                    this.regionID = 0;
+                } else {
+                    this.countryID = e.target.value;
+                    let lenght = this.currentRegions.length;
+                    this.regionID = this.currentRegions[lenght - 1].regionId;
+                }
+            },
+            changeRegionID(e) {
+                this.regionID = e.target.value;
+            }
+        }
+    }).mount('#app')
+
+</script>
+
+</body>
+</html>
+
